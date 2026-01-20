@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "./.cursor/hooks/ralph-session-start.sh"
+      }
+    ],
+    "stop": [
+      {
+        "command": "./.cursor/hooks/ralph-stop.sh"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "./.cursor/hooks/ralph-track-changes.sh"
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "./.cursor/hooks/ralph-track-execution.sh"
+      }
+    ]
+  }
+}
