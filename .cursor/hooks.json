@@ -2,24 +2,19 @@
   "version": 1,
   "hooks": {
     "beforeSubmitPrompt": [
-      {
-        "command": ".cursor/hooks/ralph-session-start.sh"
-      }
+      { "command": ".cursor/hooks/ralph-session-start.sh" }
     ],
     "stop": [
-      {
-        "command": ".cursor/hooks/ralph-stop.sh"
-      }
+      { "command": ".cursor/hooks/ralph-stop.sh" }
     ],
     "afterFileEdit": [
-      {
-        "command": ".cursor/hooks/ralph-track-changes.sh"
-      }
+      { "command": ".cursor/hooks/ralph-track-changes.sh" }
     ],
     "afterShellExecution": [
-      {
-        "command": ".cursor/hooks/ralph-track-execution.sh"
-      }
+      { "command": ".cursor/hooks/ralph-track-execution.sh" }
+    ],
+    "afterMCPExecution": [
+      { "command": ".cursor/hooks/ralph-track-mcp.sh" }
     ]
   }
 }

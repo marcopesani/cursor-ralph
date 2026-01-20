@@ -18,6 +18,12 @@ When asked to "Run Ralph" or "Next Task", follow this sequence:
     *   Check current branch matches `branchName` in `prd.json`.
     *   **Archiving**: If `prd.json` exists for a different branch than the one currently active/planned, archive the previous run to `archive/` before starting (copy `prd.json` and `progress.txt`).
 
+1b. **Check Flight Recorder** (if resuming after failure):
+    *   If the previous iteration failed, check `.cursor/logs/sessions/` for:
+        - `*_out.log` files containing error messages
+        - `*_edit_*.diff` files showing recent changes
+    *   Use this context to understand what went wrong before retrying.
+
 2.  **Select Task**:
     *   Pick the **highest priority** user story where `passes: false`.
     *   If all stories pass, output `<promise>COMPLETE</promise>` and stop.
@@ -28,7 +34,8 @@ When asked to "Run Ralph" or "Next Task", follow this sequence:
 
 4.  **Verify**:
     *   Run project quality checks (typecheck, lint, test).
-    *   **Frontend**: If UI changes, request user to verify or use browser tools if available.
+    *   **If a check fails**: Read the last error log from `.cursor/logs/sessions/*/` to understand the actual failure message. Do NOT re-run the same command blindly.
+    *   **Frontend**: If UI changes, use browser tools to verify.
 
 5.  **Record Knowledge**:
     *   Update `AGENTS.md` in relevant directories if you discover reusable patterns.
@@ -63,6 +70,20 @@ Always APPEND, never overwrite.
 This project uses Cursor hooks (`.cursor/hooks.json`) to automate the Ralph loop:
 - **`stop` hook**: Automatically continues to the next task when one completes (up to 5 iterations)
 - **`beforeSubmitPrompt` hook**: Handles archiving of previous runs when branch changes (runs at session start)
-- **`afterFileEdit` / `afterShellExecution` hooks**: Track changes for progress logging
+- **`afterFileEdit` / `afterShellExecution` / `afterMCPExecution` hooks**: Track changes for Flight Recorder
 
 The loop will continue automatically until all stories in `prd.json` have `passes: true`, or until the max loop limit is reached.
+
+## Flight Recorder
+
+Hooks automatically log all agent actions to `.cursor/logs/sessions/{session_id}/`:
+- `*_cmd.txt` + `*_out.log`: Shell commands and their full output
+- `*_edit_*.diff`: Git diffs of file changes
+- `*_mcp_*.json`: MCP tool results (browser snapshots, API responses)
+
+**When debugging failures**:
+1. List recent logs: `ls -la .cursor/logs/sessions/*/`
+2. Read last error: `cat .cursor/logs/sessions/*/*.log | tail -50`
+3. Check what changed: `cat .cursor/logs/sessions/*/*.diff`
+
+This is your "flight recorder" - use it to understand what happened without re-running commands.

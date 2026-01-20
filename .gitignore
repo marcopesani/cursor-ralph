@@ -1,9 +1,10 @@
-# Ralph working files (generated during runs)
+# Ralph working files
 prd.json
 progress.txt
 .last-branch
-.ralph-changes.tmp
-.ralph-executions.tmp
+
+# Flight Recorder logs (session-specific, not committed)
+.cursor/logs/
 
 # Archive is optional to commit
 # archive/

@@ -28,6 +28,16 @@ if [ ! -f "$PROGRESS_FILE" ]; then
   echo "---" >> "$PROGRESS_FILE"
 fi
 
+# Initialize session log directory (Flight Recorder)
+LOG_DIR=".cursor/logs/sessions/$SESSION_ID"
+mkdir -p "$LOG_DIR"
+
+# Store current story ID for context
+if [ -f "$PRD_FILE" ]; then
+  STORY_ID=$(jq -r '[.userStories[] | select(.passes == false)][0].id // "none"' "$PRD_FILE" 2>/dev/null || echo "none")
+  echo "$STORY_ID" > "$LOG_DIR/story_id.txt"
+fi
+
 # Check for archiving if prd.json exists
 if [ -f "$PRD_FILE" ] && [ -f "$LAST_BRANCH_FILE" ]; then
   CURRENT_BRANCH=$(jq -r '.branchName // empty' "$PRD_FILE" 2>/dev/null || echo "")
